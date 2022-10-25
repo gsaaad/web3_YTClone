@@ -4,6 +4,7 @@ import { create } from "ipfs-http-client";
 import saveToIPFS from "../../utils/saveToIPFS";
 import { useCreateAsset } from "@livepeer/react";
 import Image from "next/image";
+import getContract from "../../utils/getContract";
 
 export default function Upload() {
   // Creating state for the input field
@@ -39,6 +40,31 @@ export default function Upload() {
       thumbnail: thumbnailCID,
       uploadedDate: Date.now(),
     };
+    await saveVideo(data);
+  };
+
+  const uploadThumbnail = async () => {
+    const cid = await saveToIPFS(thumbnail);
+    return cid;
+  };
+
+  const uploadVideo = async () => {
+    createAsset({
+      name: title,
+      file: video,
+    });
+  };
+  const saveVideo = async (data) => {
+    let contract = await getContract();
+    await contract.uploadVideo(
+      data.video,
+      data.title,
+      data.description,
+      data.location,
+      data.category,
+      data.thumbnail,
+      data.uploadedDate
+    );
   };
 
   return (
@@ -122,6 +148,8 @@ export default function Upload() {
                   }}
                   src={URL.createObjectURL(thumbnail)}
                   alt="thumbnail"
+                  width={800}
+                  height={400}
                   className="h-full rounded-md"
                 />
               ) : (
