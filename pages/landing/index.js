@@ -52,13 +52,15 @@ function Landing() {
                   their privacy.
                 </p>
                 <button
-                  className="items-center  bg-white rounded-full font-medium  p-4 shadow-lg"
+                  className="items-center  bg-amber-500 rounded-full font-medium  p-4 shadow-lg"
                   onClick={() => {
                     // Calling the connectWallet function when user clicks on the button
                     connectWallet();
                   }}
                 >
-                  <span>Connect wallet</span>
+                  <span className="text-black font-semibold text-xl">
+                    Connect wallet
+                  </span>
                 </button>
               </div>
             </div>

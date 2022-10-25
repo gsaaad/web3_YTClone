@@ -1,6 +1,9 @@
 import React, { useState, useRef } from "react";
 import { BiCloud, BiMusic, BiPlus } from "react-icons/bi";
 import { create } from "ipfs-http-client";
+import saveToIPFS from "../../utils/saveToIPFS";
+import { useCreateAsset } from "@livepeer/react";
+import Image from "next/image";
 
 export default function Upload() {
   // Creating state for the input field
@@ -14,6 +17,29 @@ export default function Upload() {
   //  Creating a ref for thumbnail and video
   const thumbnailRef = useRef();
   const videoRef = useRef();
+
+  const {
+    mutate: createAsset,
+    data: asset,
+    uploadProgress,
+    status,
+    error,
+  } = useCreateAsset();
+
+  const handleSubmit = async () => {
+    await uploadVideo();
+    const thumbnailCID = await uploadThumbnail();
+
+    let data = {
+      video: asset?.id,
+      title,
+      description,
+      location,
+      category,
+      thumbnail: thumbnailCID,
+      uploadedDate: Date.now(),
+    };
+  };
 
   return (
     <div className="w-full h-screen bg-[#1a1c1f] flex flex-row">
@@ -90,7 +116,7 @@ export default function Upload() {
               className="border-2 w-64 border-gray-600  border-dashed rounded-md mt-2 p-2  h-36 items-center justify-center flex"
             >
               {thumbnail ? (
-                <img
+                <Image
                   onClick={() => {
                     thumbnailRef.current.click();
                   }}
